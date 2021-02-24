@@ -69,6 +69,14 @@ set nofoldenable
 nnoremap <Leader>do :-1read $HOME/.config/.skeleton.html<CR>
 "End
 
+"Tab pages
+nnoremap <C-Left> :tabprevious<CR>
+nnoremap <C-Right> :tabnext<CR>
+
+"Tab creation inside same directory
+nmap <Leader>ta :tabe %:h<CR>
+
+
 nmap <Leader>nm :NERDTreeFind<CR>
 
 nmap <Leader>w :w<CR>
