@@ -24,6 +24,8 @@ Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'raimondi/delimitmate'
 Plug 'yggdroot/indentline'
 Plug 'rstacruz/sparkup'
+Plug 'majutsushi/tagbar'
+Plug 'jelera/vim-javascript-syntax'
 
 call plug#end()
 
@@ -82,6 +84,8 @@ nmap <Leader>nm :NERDTreeFind<CR>
 nmap <Leader>w :w<CR>
 nmap <Leader>q :q<CR>
 nmap <Leader>r (,r)
+
+nmap <Leader>ct :TagbarToggle<CR>
 
 " Indentation
 vnoremap < <gv
