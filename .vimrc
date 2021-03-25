@@ -12,7 +12,12 @@ set foldmethod=manual
 
 call plug#begin('~/.vim/autoload/plugged')
 
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+Plug 'ryanoasis/vim-devicons'
 Plug 'scrooloose/nerdtree'
+"Plug 'scrooloose/syntastic'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'glepnir/oceanic-material'
@@ -33,6 +38,16 @@ set background=dark
 colorscheme oceanic_material
 "colorscheme dracula
 
+"Config syntastic
+"set statusline+=%#warningmsg#
+"set statusline+=%{SyntasticStatuslineFlag()}
+"set statusline+=%*
+
+"let g:syntastic_always_populate_loc_list = 1
+"let g:syntastic_auto_loc_list = 1
+"let g:syntastic_check_on_open = 1
+"let g:syntastic_check_on_wq = 0
+"End syntastic config
 
 let g:rainbow_active = 2
 let g:pymode_python = 'python3'
@@ -67,8 +82,18 @@ inoremap <silent><C-k> <C-R>=OmniPopup('k')<CR>
 
 set nofoldenable
 
+"CTRLP
+let g:ctrlp_map = '<c-p>'
+let g:ctrlp_cmd = 'CtrlP'
+nnoremap <C-p> :CtrlP<CR>
+
+
 "Insert HTML skeleton
 nnoremap <Leader>do :-1read $HOME/.config/.skeleton.html<CR>
+"End
+
+"Insert Bootstrap Starter Template in HTML
+nnoremap <Leader>te :-1read $HOME/.config/.bootstemplate.html<CR>
 "End
 
 "Tab pages
@@ -78,14 +103,16 @@ nnoremap <C-Right> :tabnext<CR>
 "Tab creation inside same directory
 nmap <Leader>ta :tabe %:h<CR>
 
-
+"NerdTree
 nmap <Leader>nm :NERDTreeFind<CR>
+"Config to close NerdTree when the file wanted is opened
+"let NERDTreeQuitOnOpen=1
 
 nmap <Leader>w :w<CR>
 nmap <Leader>q :q<CR>
 nmap <Leader>r (,r)
 
-nmap <Leader>ct :TagbarToggle<CR>
+nmap <F8> :TagbarToggle<CR>
 
 " Indentation
 vnoremap < <gv
@@ -94,6 +121,11 @@ vnoremap > >gv
 "Format of paragraph
 vmap Q gq
 nmap Q gqap
+
+
+
+"COC CONFIG
+
 
 " TextEdit might fail if hidden is not set.
 set hidden
