@@ -1,17 +1,21 @@
 set number
 set mouse=a
 set numberwidth=1 
-set clipboard=unnamed
+se clipboard=unnamed
 syntax enable
 set showcmd
 set ruler
 set encoding=utf-8
 set showmatch
-set sw=4
+set sw=2
+set relativenumber
+set laststatus=2
 set foldmethod=manual
+set makeprg=javac
 
 call plug#begin('~/.vim/autoload/plugged')
 
+Plug 'easymotion/vim-easymotion'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
@@ -25,21 +29,76 @@ Plug 'glepnir/oceanic-material'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'luochen1990/rainbow'
-Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'raimondi/delimitmate'
 Plug 'yggdroot/indentline'
-Plug 'rstacruz/sparkup'
-Plug 'majutsushi/tagbar'
 Plug 'jelera/vim-javascript-syntax'
+Plug 'pangloss/vim-javascript'
+Plug 'leafgarland/typescript-vim'
+Plug 'peitalin/vim-jsx-typescript'
+Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
+Plug 'jparise/vim-graphql'
+Plug 'metakirby5/codi.vim'
+Plug 'digitaltoad/vim-pug'
+Plug 'dyng/ctrlsf.vim'
+Plug 'vim-scripts/taglist.vim'
 
 call plug#end()
 
+let g:airline#extensions#gen_tags#enabled = 1
+
+let mapleader=" "
+
 set background=dark
 colorscheme oceanic_material
-"colorscheme dracula
+let g:oceanic_material_allow_italic = 1
+let g:oceanic_material_allow_bold = 1
+let g:oceanic_material_background = 'dark'
+let g:oceanic_material_allow_undercurl = 1
+
+
+" Use the ack tool as the backend
+let g:ctrlsf_backend = 'ack'
+" Auto close the results panel when opening a file
+let g:ctrlsf_auto_close = { "normal":0, "compact":0 }
+" Immediately switch focus to the search window
+let g:ctrlsf_auto_focus = { "at":"start" }
+" Don't open the preview window automatically
+let g:ctrlsf_auto_preview = 0
+" Use the smart case sensitivity search scheme
+let g:ctrlsf_case_sensitive = 'smart'
+" Normal mode, not compact mode
+let g:ctrlsf_default_view = 'normal'
+" Use absoulte search by default
+let g:ctrlsf_regex_pattern = 0
+" Position of the search window
+let g:ctrlsf_position = 'right'
+" Width or height of search window
+let g:ctrlsf_winsize = '46'
+" Search from the current working directory
+let g:ctrlsf_default_root = 'cwd'
+
+
+
+
+" (Ctrl+F) Open search prompt (Normal Mode)
+nmap <C-H>f <Plug>CtrlSFPrompt 
+" (Ctrl-F + f) Open search prompt with selection (Visual Mode)
+xmap <C-F>f <Plug>CtrlSFVwordPath
+" (Ctrl-F + F) Perform search with selection (Visual Mode)
+xmap <C-F>F <Plug>CtrlSFVwordExec
+" (Ctrl-F + n) Open search prompt with current word (Normal Mode)
+nmap <C-F>n <Plug>CtrlSFCwordPath
+" (Ctrl-F + o )Open CtrlSF window (Normal Mode)
+nnoremap <C-F>o :CtrlSFOpen<CR>
+" (Ctrl-F + t) Toggle CtrlSF window (Normal Mode)
+nnoremap <C-F>t :CtrlSFToggle<CR>
+" (Ctrl-F + t) Toggle CtrlSF window (Insert Mode)
+inoremap <C-F>t <Esc>:CtrlSFToggle<CR>
+
+
 
 "Config syntastic
-"set statusline+=%#warningmsg#
+"set statusline+=%#warning#
 "set statusline+=%{SyntasticStatuslineFlag()}
 "set statusline+=%*
 
@@ -49,10 +108,13 @@ colorscheme oceanic_material
 "let g:syntastic_check_on_wq = 0
 "End syntastic config
 
+"Easymotion keys
+nmap <Leader>m <Plug>(easymotion-s2)
+
 let g:rainbow_active = 2
 let g:pymode_python = 'python3'
-let mapleader=" "
-let g:airline_theme='simple'
+let g:airline#extensions#tabline#enabled = 1
+"let g:airline_theme='simple'
 
 map <Leader>g :call RopeGoToDefinition()<CR>
 let ropevim_enable_shortcuts = 1
@@ -106,13 +168,26 @@ nmap <Leader>ta :tabe %:h<CR>
 "NerdTree
 nmap <Leader>nm :NERDTreeFind<CR>
 "Config to close NerdTree when the file wanted is opened
-"let NERDTreeQuitOnOpen=1
+let NERDTreeQuitOnOpen=1
+"Git nerdTree
+let g:NERDTreeGitStatusShowIgnored = 1 " a heavy feature may cost much more time. default: 0
+"Syntax NerdTree
+let g:WebDevIconsDisableDefaultFolderSymbolColorFromNERDTreeDir = 1
+let g:WebDevIconsDisableDefaultFileSymbolColorFromNERDTreeFile = 1
+
+
+let g:NERDTreeFileExtensionHighlightFullName = 1
+let g:NERDTreeExactMatchHighlightFullName = 1
+let g:NERDTreePatternMatchHighlightFullName = 1
+
+let g:NERDTreeHighlightFolders = 1 " enables folder icon highlighting using exact match
+let g:NERDTreeHighlightFoldersFullName = 1 " highlights the folder name
+"End NerdTree
+
 
 nmap <Leader>w :w<CR>
 nmap <Leader>q :q<CR>
 nmap <Leader>r (,r)
-
-nmap <F8> :TagbarToggle<CR>
 
 " Indentation
 vnoremap < <gv
@@ -123,6 +198,8 @@ vmap Q gq
 nmap Q gqap
 
 
+"Indentation
+let g:indentLine_char = '|'
 
 "COC CONFIG
 
@@ -288,3 +365,121 @@ nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
 nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list.
 nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
+
+" PUG SYNTAX
+
+" Vim syntax file
+" Language: Pug
+" Maintainer: Joshua Borton
+" Credits: Tim Pope
+" Filenames: *.pug
+
+if exists("b:current_syntax")
+  finish
+endif
+
+if !exists("main_syntax")
+  let main_syntax = 'pug'
+endif
+
+silent! syntax include @htmlCoffeescript syntax/coffee.vim
+unlet! b:current_syntax
+silent! syntax include @htmlStylus syntax/stylus.vim
+unlet! b:current_syntax
+silent! syntax include @htmlCss syntax/css.vim
+unlet! b:current_syntax
+silent! syntax include @htmlMarkdown syntax/markdown.vim
+unlet! b:current_syntax
+
+syn case match
+
+syn region  javascriptParenthesisBlock start="(" end=")" contains=@htmlJavascript contained keepend
+syn cluster htmlJavascript add=javascriptParenthesisBlock
+
+syn region  pugJavascript matchgroup=pugJavascriptOutputChar start="[!&]\==\|\~" skip=",\s*$" end="$" contained contains=@htmlJavascript keepend
+syn region  pugJavascript matchgroup=pugJavascriptChar start="\(^\|\s\)\@<=-" skip=",\s*$" end="$" contained contains=@htmlJavascript keepend
+
+syn cluster pugTop contains=pugBegin,pugComment,pugHtmlComment,pugJavascript
+syn match   pugBegin "^\s*\%([<>]\|&[^=~ ]\)\@!" nextgroup=pugTag,pugClassChar,pugIdChar,pugPlainChar,pugJavascript,pugScriptConditional,pugScriptStatement,pugPipedText
+syn match   pugTag "+\?[[:alnum:]_-]\+\%(:\w\+\)\=" contained contains=htmlTagName,htmlSpecialTagName,pugJavascript nextgroup=@pugComponent
+syn cluster pugComponent contains=pugAttributes,pugIdChar,pugBlockExpansionChar,pugClassChar,pugPlainChar,pugJavascript,pugTagBlockChar,pugTagInlineText
+syn keyword pugCommentTodo  contained TODO FIXME XXX TBD
+syn match   pugComment '\(\s\+\|^\)\/\/.*$' contains=pugCommentTodo,@Spell
+syn region  pugCommentBlock start="\z(\s\+\|^\)\/\/.*$" end="^\%(\z1\s\|\s*$\)\@!" contains=pugCommentTodo,@Spell keepend
+syn region  pugHtmlConditionalComment start="<!--\%(.*\)>" end="<!\%(.*\)-->" contains=pugCommentTodo,@Spell
+syn region  pugAngular2 start="(" end=")" contains=htmlEvent
+syn region  pugJavascriptString start=+"+  skip=+\\\("\|$\)+  end=+"\|$+ contained
+syn region  pugJavascriptString start=+'+  skip=+\\\('\|$\)+  end=+'\|$+ contained
+syn region  pugJavascriptString start=+`+  skip=+\\\(`\|$\)+  end=+`\|$+ contains=javascriptInterpolation contained
+syn region  pugAttributes matchgroup=pugAttributesDelimiter start="(" end="\(.\zs)\)\|)" contained contains=pugJavascriptString,pugHtmlArg,pugAngular2,htmlArg,htmlEvent,htmlCssDefinition nextgroup=@pugComponent
+syn match   pugClassChar "\." containedin=htmlTagName nextgroup=pugClass
+syn match   pugBlockExpansionChar ":\s\+" contained nextgroup=pugTag,pugClassChar,pugIdChar
+syn match   pugIdChar "#[[{]\@!" contained nextgroup=pugId
+syn match   pugClass "\%(\w\|-\)\+" contained nextgroup=@pugComponent
+syn match   pugId "\%(\w\|-\)\+" contained nextgroup=@pugComponent
+syn region  pugDocType start="^\s*\(!!!\|doctype\)" end="$"
+" Unless I'm mistaken, syntax/html.vim requires
+" that the = sign be present for these matches.
+" This adds the matches back for pug.
+syn keyword pugHtmlArg contained href title
+
+syn match   pugPlainChar "\\" contained
+syn region  pugInterpolation matchgroup=pugInterpolationDelimiter start="[#!]{" end="}" contains=@htmlJavascript
+syn match   pugInterpolationEscape "\\\@<!\%(\\\\\)*\\\%(\\\ze#{\|#\ze{\)"
+syn match   pugTagInlineText "\s.*$" contained contains=pugInterpolation,pugTextInlinePug,@Spell
+syn region  pugPipedText matchgroup=pugPipeChar start="|" end="$" contained contains=pugInterpolation,pugTextInlinePug,@Spell nextgroup=pugPipedText skipnl
+syn match   pugTagBlockChar "\.$" contained nextgroup=pugTagBlockText,pugTagBlockEnd skipnl
+syn region  pugTagBlockText start="\%(\s*\)\S" end="\ze\n" contained contains=pugInterpolation,pugTextInlinePug,@Spell nextgroup=pugTagBlockText,pugTagBlockEnd skipnl
+syn region  pugTagBlockEnd start="\s*\S" end="$" contained contains=pugInterpolation,pugTextInlinePug nextgroup=pugBegin skipnl
+syn region  pugTextInlinePug matchgroup=pugInlineDelimiter start="#\[" end="]" contains=pugTag keepend
+
+syn region  pugJavascriptFilter matchgroup=pugFilter start="^\z(\s*\):javascript\s*$" end="^\%(\z1\s\|\s*$\)\@!" contains=@htmlJavascript
+syn region  pugMarkdownFilter matchgroup=pugFilter start=/^\z(\s*\):\%(markdown\|marked\)\s*$/ end=/^\%(\z1\s\|\s*$\)\@!/ contains=@htmlMarkdown
+syn region  pugStylusFilter matchgroup=pugFilter start="^\z(\s*\):stylus\s*$" end="^\%(\z1\s\|\s*$\)\@!" contains=@htmlStylus
+syn region  pugPlainFilter matchgroup=pugFilter start="^\z(\s*\):\%(sass\|less\|cdata\)\s*$" end="^\%(\z1\s\|\s*$\)\@!"
+
+syn match  pugScriptConditional "^\s*\<\%(if\|else\|else if\|elif\|unless\|while\|until\|case\|when\|default\)\>[?!]\@!"
+syn match  pugScriptStatement "^\s*\<\%(each\|for\|block\|prepend\|append\|mixin\|extends\|include\)\>[?!]\@!"
+syn region  pugScriptLoopRegion start="^\s*\(for\|each\)" end="$" contains=pugScriptLoopKeywords
+syn keyword  pugScriptLoopKeywords contained for each in
+
+syn region  pugJavascript start="^\z(\s*\)script\%(:\w\+\)\=" end="^\%(\z1\s\|\s*$\)\@!" contains=@htmlJavascript,pugJavascriptTag,pugCoffeescriptFilter keepend
+syn region javascriptInterpolation start=/${/ end=/}/ contained
+
+syn region  pugCoffeescriptFilter matchgroup=pugFilter start="^\z(\s*\):coffee-\?script\s*$" end="^\%(\z1\s\|\s*$\)\@!" contains=@htmlCoffeescript contained
+syn region  pugJavascriptTag contained start="^\z(\s*\)script\%(:\w\+\)\=" end="$" contains=pugBegin,pugTag
+syn region  pugCssBlock        start="^\z(\s*\)style" nextgroup=@pugComponent,pugError  end="^\%(\z1\s\|\s*$\)\@!" contains=@htmlCss keepend
+
+syn match  pugError "\$" contained
+
+hi def link pugPlainChar              Special
+hi def link pugScriptConditional      PreProc
+hi def link pugScriptLoopKeywords     PreProc
+hi def link pugScriptStatement        PreProc
+hi def link pugHtmlArg                htmlArg
+hi def link pugAttributeString        String
+hi def link pugAttributesDelimiter    Identifier
+hi def link pugIdChar                 Special
+hi def link pugClassChar              Special
+hi def link pugBlockExpansionChar     Special
+hi def link pugPipeChar               Special
+hi def link pugTagBlockChar           Special
+hi def link pugId                     Identifier
+hi def link pugClass                  Type
+hi def link pugInterpolationDelimiter Delimiter
+hi def link pugInlineDelimiter        Delimiter
+hi def link pugFilter                 PreProc
+hi def link pugDocType                PreProc
+hi def link pugCommentTodo            Todo
+hi def link pugComment                Comment
+hi def link pugCommentBlock           Comment
+hi def link pugHtmlConditionalComment pugComment
+hi def link pugJavascriptString       String
+hi def link javascriptInterpolation   Delimiter
+
+let b:current_syntax = "pug"
+
+if main_syntax == "pug"
+  unlet main_syntax
+endif
+
